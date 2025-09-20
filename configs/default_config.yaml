@@ -1,0 +1,70 @@
+# TAMO-FoA Default Configuration
+model_paths:
+  encoder_model_path: "models/encoder"
+  sop_pruner_path: "models/sop_pruner"
+  hdm2_model_path: "models/hdm2"
+
+data_paths:
+  data_dir: "data"
+  cache_dir: "cache"
+
+neo4j:
+  uri: "bolt://localhost:7687"
+  user: "neo4j"
+  password: "password"
+
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+
+kafka:
+  bootstrap_servers: "localhost:9092"
+  topic: "tamo-foa-incidents"
+
+performance:
+  max_concurrent_incidents: 10
+  response_timeout: 30
+  memory_limit_gb: 8
+
+device:
+  device: "auto"
+  num_workers: 4
+
+encoder:
+  num_metrics: 10
+  metric_seq_len: 100
+  log_model_name: "bert-base-uncased"
+  node_feature_dim: 128
+  hidden_dim: 1024
+  diffusion_steps: 1000
+  learning_rate: 0.0001
+  batch_size: 32
+
+sop_pruner:
+  max_sops: 1000
+  similarity_threshold: 0.75
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  max_actions: 50
+  learning_rate: 0.001
+  batch_size: 16
+
+hdm2_detector:
+  model_name: "microsoft/deberta-base"
+  max_length: 512
+  learning_rate: 0.00002
+  batch_size: 16
+  num_epochs: 10
+  dropout: 0.1
+
+evaluation:
+  benchmarks: ["OpenRCA", "ITBench", "CloudDiagBench"]
+  num_samples: 100
+  confidence_threshold: 0.7
+  timeout: 60
+
+logging:
+  level: "INFO"
+  file: "logs/tamo-foa.log"
+  max_size: "10MB"
+  backup_count: 5
