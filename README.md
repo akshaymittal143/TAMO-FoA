@@ -26,7 +26,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/<username>/TAMO-FoA.git
+git clone https://github.com/akshaymittal143/TAMO-FoA.git
 cd TAMO-FoA
 
 # Build Docker image with GPU support
@@ -264,7 +264,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Contact
 
 - **Akshay Mittal**: akshay.mittal@ieee.org
-- **Project Link**: https://github.com/<username>/TAMO-FoA
+- **Project Link**: https://github.com/akshaymittal143/TAMO-FoA
 - **Paper**: [arXiv link when available]
 
 ---
