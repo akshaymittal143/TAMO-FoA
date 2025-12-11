@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAMO-FoA: Tool-Augmented AIOps for Reliable RCA</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+    
+    <style>
+        :root {
+            --primary: #00629B;
+            --accent: #FF6B00;
+            --success: #27AE60;
+            --warning: #F39C12;
+            --danger: #E74C3C;
+            --neutral: #7F8C8D;
+        }
+        
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 32px;
+        }
+        
+        .reveal h1 {
+            font-size: 2.2em;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .reveal h2 {
+            font-size: 1.8em;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .reveal h3 {
+            font-size: 1.3em;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        .reveal .slides section {
+            text-align: left;
+        }
+        
+        .highlight-box {
+            border-left: 5px solid var(--primary);
+            padding: 15px 20px;
+            margin: 20px 0;
+            background: #F8F9FA;
+            border-radius: 4px;
+        }
+        
+        .key-takeaway {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.7em;
+        }
+        
+        .comparison-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 10px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        
+        .comparison-table tr:hover {
+            background: #F8F9FA;
+        }
+        
+        .comparison-table .better {
+            background: #D5F4E6;
+            font-weight: 600;
+        }
+        
+        .metric {
+            background: linear-gradient(135deg, var(--success) 0%, #2ECC71 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .code-block {
+            background: #2D2D2D;
+            color: #F8F8F2;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.6em;
+            overflow-x: auto;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.6em;
+            font-weight: 600;
+            margin: 5px;
+        }
+        
+        .badge-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .badge-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .badge-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .badge-accent {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .title-slide {
+            text-align: center;
+        }
+        
+        .title-slide h1 {
+            margin-bottom: 30px;
+        }
+        
+        .authors {
+            font-size: 0.8em;
+            color: var(--neutral);
+            margin: 20px 0;
+        }
+        
+        .affiliation {
+            font-size: 0.6em;
+            color: var(--neutral);
+            margin-top: 10px;
+        }
+        
+        .conference {
+            margin-top: 40px;
+            font-size: 0.7em;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .pillar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 10px;
+        }
+        
+        .pillar h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .before {
+            border-left: 5px solid var(--danger);
+            padding: 15px;
+            background: #FFEBEE;
+        }
+        
+        .after {
+            border-left: 5px solid var(--success);
+            padding: 15px;
+            background: #E8F5E9;
+        }
+        
+        @media print {
+            .reveal .slides section {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Title -->
+            <section class="title-slide">
+                <h1>TAMO-FoA</h1>
+                <h2>Tool-Augmented AIOps for Reliable RCA<br>in Cloud-Native Systems</h2>
+                <div class="authors">
+                    <p><strong>Akshay Mittal</strong><sup>1</sup>, <strong>Krishna Kandi</strong><sup>2</sup>,</p>
+                    <p><strong>Rafiuddin Syed</strong><sup>3</sup>, <strong>Sagar Mahajan</strong><sup>4</sup></p>
+                </div>
+                <div class="affiliation">
+                    <p><sup>1</sup>University of the Cumberlands, Austin, TX, USA</p>
+                    <p><sup>2,3,4</sup>Independent Researchers</p>
+                </div>
+                <div class="conference">
+                    IEEE Conference on Cloud Computing and Wireless Communication (CCWC)<br>January 2026
+                </div>
+                <aside class="notes">
+                    [Opening - 30 seconds]
+                    Good morning/afternoon everyone. Thank you for being here today. I'm excited to present our work on TAMO-FoA, a comprehensive framework that addresses critical challenges in using Large Language Models for Root Cause Analysis in cloud-native systems.
+                    
+                    Before I dive in, let me set the stage: modern cloud-native systems generate massive volumes of multi-modal telemetry data—metrics, logs, and traces—at unprecedented velocities. When incidents occur, the Mean Time to Resolution directly impacts revenue, customer satisfaction, and operational costs. While LLMs show tremendous promise for automating RCA, they suffer from three fundamental limitations: hallucinations, context constraints, and dynamic dependency misunderstandings.
+                    
+                    Today, I'll show you how TAMO-FoA systematically addresses these challenges through four key innovations, achieving 17.2% accuracy improvement and 2.3× token efficiency gains. Let's begin.
+                </aside>
+            </section>
+            s
+            <!-- Slide 2: Problem Statement -->
+            <section>
+                <h2>The Challenge: LLMs in Production RCA</h2>
+                <div class="highlight-box">
+                    <strong>Critical Gap:</strong> LLMs show promise but face fundamental limitations in mission-critical IT operations
+                </div>
+                
+                <ul>
+                    <li class="fragment">🚨 <strong>Hallucinations:</strong> LLMs generate plausible but incorrect root causes, especially for enterprise-specific knowledge</li>
+                    <li class="fragment">📊 <strong>Context Constraints:</strong> Limited context windows struggle with multi-modal telemetry (metrics, logs, traces)</li>
+                    <li class="fragment">🔄 <strong>Dynamic Dependencies:</strong> Misunderstanding current service relationships leads to incorrect fault propagation analysis</li>
+                    <li class="fragment">⚡ <strong>Scalability:</strong> High computational costs and latency for real-time incident response</li>
+                </ul>
+                
+                <div class="key-takeaway fragment">
+                    <strong>Impact:</strong> Current approaches achieve only 61.2% accuracy with high token consumption, making production deployment risky
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 90 seconds]
+                    Let me paint the picture of the problem we're solving. Imagine you're an SRE at 2 AM, and a multi-region outage is affecting thousands of customers. You have petabytes of telemetry data—Prometheus metrics showing CPU spikes, Elasticsearch logs with error messages, and Jaeger traces showing service dependencies. Traditional rule-based systems can't handle novel failures, and when you try using an LLM directly, three critical problems emerge.
+                    
+                    First, hallucinations. The LLM might confidently tell you that "OrderService-v2" is the root cause, but that service doesn't even exist in your infrastructure. It's making up plausible-sounding answers based on public knowledge, not your actual system state. This is especially dangerous in enterprise environments where proprietary service names, custom metric namespaces, and internal topologies are completely absent from the LLM's training data.
+                    
+                    Second, context constraints. Your incident involves 12 microservices, each generating thousands of log lines per minute, plus time-series metrics and distributed traces. The LLM's context window fills up quickly, and you lose critical temporal relationships between events. Simple textualization of this heterogeneous data destroys the sequential patterns that are essential for understanding system behavior.
+                    
+                    Third, dynamic dependencies. Your Kubernetes cluster's service mesh topology changes constantly as pods scale up and down. The LLM might reason about dependencies that existed last week but are completely wrong today. This leads to incorrect fault propagation analysis, where the system investigates the wrong service chain.
+                    
+                    The result? Current LLM-based approaches achieve only 61.2% accuracy with vanilla ReAct agents, and they consume massive amounts of tokens querying irrelevant tools. This makes production deployment risky and expensive.
+                    
+                    [Closing transition]
+                    So how do we solve this? Let me show you our comprehensive framework.
+                </aside>
+            </section>
+            
+            <!-- Slide 3: Solution Overview -->
+            <section>
+                <h2>TAMO-FoA: Comprehensive Solution</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>High-Level Approach</h3>
+                        <p>TAMO-FoA integrates four key innovations to address LLM limitations:</p>
+                        <ul>
+                            <li>🔧 <strong>Tool-Augmented Perception</strong></li>
+                            <li>📋 <strong>SOP-Guided Reasoning</strong></li>
+                            <li>✅ <strong>HDM-2 Verification</strong></li>
+                            <li>🔀 <strong>Multi-Modal Fusion</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Key Results</h3>
+                        <div class="metric">
+                            <span class="metric-value">78.4%</span>
+                            <span>RCA Accuracy</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">2.3×</span>
+                            <span>Token Efficiency</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">34%</span>
+                            <span>MTTR Reduction</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-takeaway">
+                    <strong>Tagline:</strong> "From LLM potential to production-ready AgentOps—systematic integration of perception, reasoning, and verification"
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 75 seconds]
+                    So here's our solution: TAMO-FoA, which stands for Tool-Augmented Multimodal Operations Framework for AIOps. We've designed this as a comprehensive system that doesn't just use LLMs—we engineer reliable agent systems powered by LLMs.
+                    
+                    Our framework has four key innovations. First, tool-augmented perception. Instead of relying on static pre-trained knowledge, our agent queries real-time APIs—Prometheus for metrics, Kubernetes APIs for topology, Elasticsearch for logs, and Jaeger for traces. This grounds the reasoning in actual system state during incidents.
+                    
+                    Second, SOP-guided reasoning. We integrate Standard Operating Procedures from your organization's knowledge base. When an incident occurs, the agent retrieves relevant SOPs and uses them to guide the diagnostic workflow. This isn't just retrieval—we have a Random Forest action pruner that reduces irrelevant tool calls by 42% compared to vanilla ReAct.
+                    
+                    Third, HDM-2 verification. This is our novel Hallucination Detection Module that uses dual verification: it checks responses against provided context using DeBERTa, and separately verifies claims against common knowledge. What makes it special is that it distinguishes between Enterprise Knowledge—your proprietary service names and topologies—and Common Knowledge—publicly documented concepts. This enables stricter verification for enterprise-specific claims.
+                    
+                    Fourth, multi-modal fusion. We don't just textualize everything. We use a hybrid encoder: 1D-CNN for metrics, BERT+LSTM for logs, and GNN for traces, followed by diffusion-based fusion that preserves temporal relationships across modalities.
+                    
+                    The results speak for themselves: 78.4% accuracy, 2.3× better token efficiency, and 34% reduction in mean time to resolution. This is a concrete path toward dependable AgentOps.
+                    
+                    [Closing transition]
+                    Now let me walk you through the architecture to show you how these components work together.
+                </aside>
+            </section>
+            
+            <!-- Slide 4: Architecture/Framework -->
+            <section>
+                <h2>TAMO-FoA System Architecture</h2>
+                
+                <div class="three-column">
+                    <div class="card fragment">
+                        <h3>1. Multi-Modal<br>Observation Engine</h3>
+                        <ul style="font-size: 0.7em;">
+                            <li>Metrics: 1D-CNN + Temporal Attention</li>
+                            <li>Logs: BERT + BiLSTM</li>
+                            <li>Traces: Graph Neural Network</li>
+                            <li>Fusion: Diffusion-based Cross-Attention</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card fragment">
+                        <h3>2. SOP-Enhanced<br>Reasoning Agent</h3>
+                        <ul style="font-size: 0.7em;">
+                            <li>Neo4j SOP Knowledge Base (247 procedures)</li>
+                            <li>Sentence-BERT Retrieval</li>
+                            <li>Random Forest Action Pruner</li>
+                            <li>15 Specialized Tools</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card fragment">
+                        <h3>3. HDM-2<br>Verification Module</h3>
+                        <ul style="font-size: 0.7em;">
+                            <li>DeBERTa Context Verification</li>
+                            <li>Probe-based Knowledge Verification</li>
+                            <li>Enterprise vs. Common Knowledge Taxonomy</li>
+                            <li>Contrastive Learning</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card fragment" style="margin-top: 20px;">
+                    <h3>4. Action Execution Engine</h3>
+                    <p style="font-size: 0.7em;">Interfaces with Kubernetes API, Monitoring Systems, and Incident Management platforms</p>
+                </div>
+                
+                <div class="highlight-box fragment">
+                    <strong>Performance:</strong> 3.7s average response time, 27 incidents/minute throughput
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 90 seconds]
+                    Let me walk you through the architecture, going bottom-up because that's how data flows through the system.
+                    
+                    At the bottom, we have our data sources: Prometheus for metrics, Elasticsearch for logs, and Jaeger for traces. This multi-modal telemetry flows into our Multi-Modal Observation Engine. This is where the magic happens. We don't just concatenate everything into text. Instead, we have three specialized branches. The metrics branch uses 1D-CNN with temporal attention to capture patterns in time-series data. The logs branch uses BERT plus bidirectional LSTM to extract meaning from textual log messages. The traces branch uses a Graph Neural Network to analyze relationships in distributed traces. Then, all three branches feed into a diffusion-based fusion layer that uses cross-attention to integrate insights from metrics, logs, and traces, creating a comprehensive 1024-dimensional representation that preserves temporal relationships.
+                    
+                    This unified representation flows into our SOP-Enhanced Reasoning Agent. Here's where domain expertise comes in. We have a Neo4j graph database storing 247 Standard Operating Procedures. When an incident occurs, we use Sentence-BERT to retrieve relevant SOPs based on semantic similarity. But here's the key innovation: we don't just execute all possible actions. We use a Random Forest action pruner trained on 10,000 expert-labeled sequences. This pruner uses features like action type, context similarity to SOPs, historical success rates, and temporal relevance. It achieves 94.3% accuracy with only 12 milliseconds of inference overhead, and it reduces irrelevant tool calls by 42%. The agent follows a Thought-ActionSet-Action-Observation paradigm, where it first generates candidate actions consistent with the current SOP step, then the pruner selects the most promising one.
+                    
+                    Before executing actions, everything goes through our HDM-2 Verification Module. This is our enterprise-grade hallucination detector. It uses dual verification: for closed models like GPT-4o, it uses external DeBERTa-based verifiers to check response consistency against provided context. For open models, it performs internal representation probing. The detector uses contrastive self-supervision to learn discriminative representations between factual and hallucinated content. What makes it enterprise-aware is the taxonomy: it distinguishes Enterprise Knowledge—your internal service identifiers and proprietary metric namespaces—from Common Knowledge—publicly documented concepts. For Enterprise Knowledge, we enforce higher confidence thresholds, cross-referencing against the live topology graph rather than relying on semantic plausibility.
+                    
+                    Finally, verified actions flow to the Action Execution Engine, which interfaces with Kubernetes APIs, monitoring systems, and incident management platforms.
+                    
+                    The entire pipeline achieves 3.7 seconds average response time with 27 incidents per minute throughput. The latency breakdown shows that reasoning is the bottleneck at 49%, followed by observation at 32%.
+                    
+                    [Closing transition]
+                    Now let me dive deeper into each technical component, starting with the multi-modal encoder.
+                </aside>
+            </section>
+            
+            <!-- Slide 5: Technical Deep Dive 1 - Multi-Modal Encoder -->
+            <section>
+                <h2>Technical Deep Dive: Multi-Modal Encoder</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>Hybrid Architecture</h3>
+                        <div class="code-block">
+<strong>Modality-Specific Encoders:</strong>
+• Metrics: 1D-CNN + Temporal Attention
+  → Captures time-series patterns
+• Logs: BERT + BiLSTM
+  → Extracts semantic meaning
+• Traces: Graph Neural Network
+  → Models service dependencies
+
+<strong>Diffusion-Based Fusion:</strong>
+L_diff = E[||ε - ε_θ(x_t, t, c)||²]
+→ Preserves temporal causality
+→ Robust to noise in telemetry
+→ 1000 diffusion timesteps
+                        </div>
+                        <div class="badge badge-primary">1024-dim output</div>
+                        <div class="badge badge-success">Temporal preservation</div>
+                    </div>
+                    <div>
+                        <h3>Why Diffusion?</h3>
+                        <ul>
+                            <li class="fragment">AIOps telemetry is inherently noisy</li>
+                            <li class="fragment">Multiple possible root causes (probabilistic)</li>
+                            <li class="fragment">Temporal misalignments across modalities</li>
+                            <li class="fragment">Uncertainty quantification</li>
+                        </ul>
+                        <div class="highlight-box fragment">
+                            <strong>Result:</strong> 9.1% accuracy drop when diffusion encoder is removed (ablation study)
+                        </div>
+                    </div>
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 75 seconds]
+                    Let me explain why we chose this hybrid multi-modal architecture and why diffusion-based fusion is crucial.
+                    
+                    Traditional approaches to multi-modal AIOps data simply textualize everything. You take a Prometheus metric, convert it to "CPU utilization is 95%", take a log line "ERROR: connection timeout", and a trace showing service A calling service B, and you concatenate them into a single text string. This destroys temporal relationships and loses critical features.
+                    
+                    Instead, we use modality-specific encoders that respect the inherent structure of each data type. For metrics, which are continuous time-series, we use 1D-CNN with temporal attention. This captures patterns like "CPU spikes every 5 minutes" or "memory gradually increasing over 2 hours". For logs, which are discrete textual tokens, we use BERT to extract semantic meaning—understanding that "connection timeout" and "failed to connect" are related—followed by BiLSTM to capture sequential patterns in log streams. For traces, which are graph-structured, we use a Graph Neural Network to model service dependencies and understand fault propagation paths.
+                    
+                    Now, the key innovation is diffusion-based fusion. Why diffusion? AIOps telemetry presents unique challenges: it's multi-modal, temporally sensitive, and inherently noisy. There's often a distribution of possible root causes rather than a single deterministic answer. Diffusion models offer robustness to noise and probabilistic fusion of heterogeneous telemetry.
+                    
+                    The diffusion loss function uses denoising score matching. We add Gaussian noise to the fused representation and train a denoising network to recover the original. This process, over 1000 timesteps, learns to preserve temporal relationships across modalities while being robust to noise. The conditioning information 'c' allows each modality to inform the others—for example, a log error at timestamp T can help the metrics encoder focus on anomalies at that same time.
+                    
+                    Our ablation study shows that removing the diffusion encoder causes a 9.1% accuracy drop, validating that this fusion mechanism is critical. The output is a unified 1024-dimensional representation that preserves temporal causality.
+                    
+                    [Closing transition]
+                    Now let's look at how we guide the reasoning process with Standard Operating Procedures.
+                </aside>
+            </section>
+            
+            <!-- Slide 6: Technical Deep Dive 2 - SOP-Enhanced Reasoning -->
+            <section>
+                <h2>Technical Deep Dive: SOP-Enhanced Reasoning</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>Thought-ActionSet-Action-Observation</h3>
+                        <div style="font-size: 0.8em;">
+                            <p><strong>1. Thought:</strong> Agent analyzes current state</p>
+                            <p><strong>2. ActionSet:</strong> Generates candidate actions guided by SOP</p>
+                            <p><strong>3. Action:</strong> Random Forest pruner selects best action</p>
+                            <p><strong>4. Observation:</strong> Executes tool call, observes result</p>
+                        </div>
+                        
+                        <div class="card fragment" style="margin-top: 20px;">
+                            <h4>Action Pruner Features</h4>
+                            <ul style="font-size: 0.7em;">
+                                <li>Action type (38% importance)</li>
+                                <li>Context similarity to SOPs (29%)</li>
+                                <li>Historical success rates</li>
+                                <li>Temporal relevance</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Performance Impact</h3>
+                        <div class="metric">
+                            <span class="metric-value">42%</span>
+                            <span>Reduction in Irrelevant Tool Calls</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">94.3%</span>
+                            <span>Pruner Accuracy</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">12ms</span>
+                            <span>Inference Overhead</span>
+                        </div>
+                        
+                        <div class="highlight-box fragment">
+                            <strong>Key Insight:</strong> SOP alignment is more predictive than generic action-type heuristics
+                        </div>
+                    </div>
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 90 seconds]
+                    The standard ReAct paradigm has a fundamental problem: the unconstrained Action step leads to combinatorial explosion of tool calls. In complex domains like AIOps, the agent might try to query every possible service, check every metric, and analyze every log file. Many of these calls are irrelevant, costly, or even harmful.
+                    
+                    Our solution is the Thought-ActionSet-Action-Observation paradigm. Here's how it works. First, the agent generates a Thought—analyzing the current state based on previous observations. Then, instead of directly choosing an action, it generates an ActionSet—a set of candidate actions that are consistent with the current SOP step retrieved from the knowledge base. This SOP guidance constrains the action space to domain-appropriate diagnostic steps.
+                    
+                    But we don't execute all candidate actions. This is where our Random Forest action pruner comes in. It's trained on 10,000 expert-labeled sequences—real diagnostic trajectories from experienced SREs. The pruner uses four key features. First, action type—is this a query, a check, or a remediation? Second, and most importantly, context similarity to SOPs—how well does this action align with the retrieved Standard Operating Procedure? This accounts for 38% of the model's discriminative power. Third, historical success rates—has this action been successful in similar past incidents? Fourth, temporal relevance—is this action timely given the current diagnostic stage?
+                    
+                    The pruner achieves 94.3% accuracy with only 12 milliseconds of inference overhead. This is negligible compared to the LLM inference time, but it dramatically reduces irrelevant tool calls by 42% compared to vanilla ReAct.
+                    
+                    Feature importance analysis via permutation-based ranking reveals something crucial: "context similarity to SOPs" accounts for 38% of the model's discriminative power, while "historical success rates" contributes 29%. This validates our hypothesis that domain-specific procedural alignment is more predictive than generic action-type heuristics. The pruner effectively distills years of SRE experience into a lightweight gating mechanism.
+                    
+                    The result? The agent follows expert-validated diagnostic paths, reducing wasted API calls and improving both accuracy and efficiency. Our ablation study shows that removing SOP guidance causes the largest performance drop—11.7 percentage points in accuracy.
+                    
+                    [Closing transition]
+                    But even with SOP guidance, the agent can still hallucinate. That's where our HDM-2 verification module comes in.
+                </aside>
+            </section>
+            
+            <!-- Slide 7: Technical Deep Dive 3 - HDM-2 Verification -->
+            <section>
+                <h2>Technical Deep Dive: HDM-2 Hallucination Detection</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>Dual Verification Approach</h3>
+                        <div class="card">
+                            <h4>1. Context Verification</h4>
+                            <p style="font-size: 0.7em;">DeBERTa-based verifier checks response consistency against provided context documents using fine-grained, span-level detection</p>
+                        </div>
+                        <div class="card">
+                            <h4>2. Knowledge Verification</h4>
+                            <p style="font-size: 0.7em;">Probe-based verification for open models; external verifiers for closed models (GPT-4o/Claude-3.5)</p>
+                        </div>
+                        
+                        <div class="highlight-box fragment">
+                            <strong>Taxonomy:</strong> Enterprise Knowledge vs. Common Knowledge
+                            <ul style="font-size: 0.7em; margin-top: 10px;">
+                                <li>Enterprise: Internal service IDs, proprietary metrics (0.85 threshold)</li>
+                                <li>Common: HTTP codes, K8s resources (0.70 threshold)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Performance Results</h3>
+                        <div class="metric">
+                            <span class="metric-value">0.82</span>
+                            <span>F1 Score</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">21%</span>
+                            <span>Relative Improvement</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-value">7.2%</span>
+                            <span>False Positive Rate</span>
+                        </div>
+                        
+                        <div class="card fragment" style="margin-top: 20px;">
+                            <h4>Contrastive Learning</h4>
+                            <p style="font-size: 0.7em;">Learns discriminative representations between factual and hallucinated content through self-supervision</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 90 seconds]
+                    Even with SOP guidance and tool-augmented perception, LLMs can still hallucinate. Simple retrieval-augmented generation isn't enough—the LLM might ignore or misinterpret the retrieved context. That's why we built HDM-2, our specialized Hallucination Detection Module.
+                    
+                    HDM-2 uses a dual verification approach. First, context verification. We use a DeBERTa-based verifier that checks the LLM's response against the provided context documents using fine-grained, span-level detection. It doesn't just check if the overall response is plausible—it verifies each claim at the span level. For example, if the agent says "OrderService-v2 is experiencing high latency", the verifier checks: does the context actually mention OrderService-v2? Is there evidence of high latency in the metrics?
+                    
+                    Second, knowledge verification. For closed models like GPT-4o, we use external DeBERTa-based verifiers. For open models, we perform internal representation probing—querying the model's internal states to check if it's confident about the knowledge it's asserting.
+                    
+                    But here's what makes HDM-2 enterprise-aware: our taxonomy distinguishes between Enterprise Knowledge and Common Knowledge. Enterprise Knowledge encompasses organization-specific facts like internal service identifiers—"OrderService-v2" might not exist in your infrastructure, but the LLM might confidently assert it because it sounds plausible. Or proprietary metric namespaces like "custom.db.pool.utilization" that are completely absent from public pre-training corpora. Or infrastructure-specific topologies—the actual service dependency graph in your Kubernetes cluster.
+                    
+                    Common Knowledge includes publicly documented concepts like HTTP status codes, standard Kubernetes resources, and general distributed systems principles. These are things the LLM was likely trained on.
+                    
+                    This distinction enables stricter verification protocols. For Enterprise Knowledge, we enforce a higher confidence threshold—0.85 versus 0.70 for Common Knowledge. When the agent makes an Enterprise Knowledge claim, HDM-2 cross-references it against the live topology graph queried via Kubernetes API and internal configuration databases, rather than relying solely on semantic plausibility.
+                    
+                    The detector uses contrastive learning to learn discriminative representations between factual and hallucinated content. We train it using self-supervision, where we create positive pairs from verified correct responses and negative pairs from known hallucinations. This achieves a 21% relative improvement in F1 scores over traditional supervised approaches.
+                    
+                    The results: 0.82 F1 score with a 7.2% false positive rate. In our ablation study, removing HDM-2 verification causes a 15.3% increase in hallucination rate, demonstrating its critical importance.
+                    
+                    Let me give you a concrete example. During a real incident, the reasoning agent initially hypothesized a dependency path involving "PaymentGateway" → "InventoryService" based on semantic similarity in error messages. However, HDM-2's Enterprise Knowledge verifier flagged this as a hallucination because the live service topology graph revealed no direct or transitive edges between these services. The system automatically triggered a replanning cycle, redirecting the investigation toward the correct dependency chain.
+                    
+                    [Closing transition]
+                    Now let me show you how this works in practice with real-world use cases.
+                </aside>
+            </section>
+            
+            <!-- Slide 8: Use Case 1 -->
+            <section>
+                <h2>Use Case 1: Database Connection Pool Exhaustion</h2>
+                
+                <div class="highlight-box">
+                    <strong>Scenario:</strong> Cascading failures across 12 microservices, 4.2 minutes to resolution, 94% confidence
+                </div>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>Step-by-Step Walkthrough</h3>
+                        <ol style="font-size: 0.8em;">
+                            <li class="fragment"><strong>Detection:</strong> Anomalous patterns detected
+                                <ul>
+                                    <li>Metrics: 95% pool utilization</li>
+                                    <li>Logs: Timeout errors</li>
+                                    <li>Traces: Service dependency failures</li>
+                                </ul>
+                            </li>
+                            <li class="fragment"><strong>SOP Retrieval:</strong> Relevant database connectivity SOPs retrieved</li>
+                            <li class="fragment"><strong>Investigation:</strong> Multi-modal correlation identifies OrderService as source</li>
+                            <li class="fragment"><strong>Verification:</strong> HDM-2 verifies against live topology</li>
+                            <li class="fragment"><strong>Root Cause:</strong> Misconfigured max_connections exceeding database limit</li>
+                            <li class="fragment"><strong>Remediation:</strong> Automated Kubernetes API calls to adjust configuration</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h3>Key Insights</h3>
+                        <div class="card fragment">
+                            <h4>HDM-2 Caught a Hallucination</h4>
+                            <p style="font-size: 0.7em;">Agent initially suggested "PaymentGateway → InventoryService" dependency, but HDM-2 flagged this as hallucination by cross-referencing live topology graph. System automatically replanned.</p>
+                        </div>
+                        <div class="metric fragment">
+                            <span class="metric-value">4.2 min</span>
+                            <span>Time to Resolution</span>
+                        </div>
+                        <div class="metric fragment">
+                            <span class="metric-value">94%</span>
+                            <span>Confidence Score</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 120 seconds]
+                    Let me walk you through a real incident that demonstrates TAMO-FoA's effectiveness. This happened during our 3-month pilot deployment in a production Kubernetes cluster managing 47 microservices.
+                    
+                    At 2:37 AM, alerts started firing. Multiple services were experiencing timeouts, and error rates were spiking. The incident involved 12 microservices showing cascading failures. Let me show you how TAMO-FoA handled this.
+                    
+                    First, the Multi-Modal Observation Engine detected anomalous patterns across all three data sources. Prometheus metrics showed database connection pool utilization at 95%—way above the normal 30-40% range. Elasticsearch logs were flooded with timeout errors: "ERROR: connection pool exhausted, unable to acquire connection". Jaeger traces showed a clear pattern: requests were failing as they propagated through the service dependency chain, starting from OrderService and cascading to downstream services.
+                    
+                    The SOP-Enhanced Reasoning Agent retrieved relevant Standard Operating Procedures for database connectivity issues. The SOP knowledge base contained a procedure specifically for connection pool exhaustion scenarios. Following the Thought-ActionSet-Action-Observation paradigm, the agent generated candidate actions: check database connection pool metrics, examine service configurations, verify dependency topology. The Random Forest pruner selected the most relevant actions based on context similarity to the SOP.
+                    
+                    The agent then correlated the multi-modal data. The metrics showed high pool utilization, the logs showed timeout errors, and the traces showed the failure starting at OrderService. The diffusion-based fusion preserved the temporal relationship: the pool utilization spike occurred 30 seconds before the first timeout errors, and the trace analysis confirmed that OrderService was the first service in the dependency chain to fail.
+                    
+                    But here's where HDM-2 proved critical. The reasoning agent initially hypothesized a dependency path involving "PaymentGateway" → "InventoryService" based on semantic similarity in error messages. Both services had similar error patterns, and the LLM's semantic understanding suggested they might be related. However, HDM-2's Enterprise Knowledge verifier flagged this as a hallucination. It cross-referenced the claim against the live service topology graph, queried via Kubernetes API and parsed from Istio service mesh telemetry. The graph revealed no direct or transitive edges between PaymentGateway and InventoryService. HDM-2 triggered an automatic replanning cycle, redirecting the investigation toward the correct dependency chain: "OrderService" → "DatabaseProxy" → "PostgreSQL".
+                    
+                    The system then identified the root cause: OrderService had a misconfigured max_connections parameter set to 200, but the PostgreSQL database's global connection limit was only 150. When traffic spiked, OrderService exhausted all available connections, causing downstream services to fail.
+                    
+                    The Action Execution Engine automatically executed remediation via Kubernetes API calls, adjusting the max_connections configuration. The entire process completed in 4.2 minutes with 94% confidence. Without TAMO-FoA, this would have taken an SRE team 15-20 minutes to diagnose manually.
+                    
+                    This case demonstrates all four innovations working together: multi-modal fusion preserved temporal causality, SOP guidance focused the investigation, HDM-2 caught a critical hallucination, and tool-augmented perception grounded reasoning in actual system state.
+                    
+                    [Closing transition]
+                    Let me show you another use case that highlights different aspects of the framework.
+                </aside>
+            </section>
+            
+            <!-- Slide 9: Use Case 2 -->
+            <section>
+                <h2>Use Case 2: Production Deployment Results</h2>
+                
+                <div class="before-after">
+                    <div class="before">
+                        <h3>Before TAMO-FoA</h3>
+                        <ul style="font-size: 0.8em;">
+                            <li>Rule-based system: 68.1% accuracy</li>
+                            <li>MTTR: 23.7 minutes</li>
+                            <li>High human intervention rate</li>
+                            <li>Limited to known failure patterns</li>
+                        </ul>
+                    </div>
+                    <div class="after">
+                        <h3>After TAMO-FoA</h3>
+                        <ul style="font-size: 0.8em;">
+                            <li><strong>76.3% accuracy</strong> in production</li>
+                            <li><strong>15.6 minutes MTTR</strong> (34% reduction)</li>
+                            <li><strong>89% automated</strong> without human intervention</li>
+                            <li>Handles novel failure patterns</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="two-column" style="margin-top: 20px;">
+                    <div class="card">
+                        <h4>3-Month Pilot Deployment</h4>
+                        <ul style="font-size: 0.7em;">
+                            <li><strong>1,247 incidents</strong> processed</li>
+                            <li><strong>47 microservices</strong> across 3 environments</li>
+                            <li><strong>31% novel incidents</strong> (SOP coverage gaps)</li>
+                            <li><strong>11% required human intervention</strong></li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Failure Mode Analysis</h4>
+                        <ul style="font-size: 0.7em;">
+                            <li>Novel third-party integrations: 45%</li>
+                            <li>Complex cascading failures: 35%</li>
+                            <li>Infrastructure-level issues: 20%</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="key-takeaway">
+                    <strong>Key Insight:</strong> When TAMO-FoA required human intervention, it saved SREs an average of 8 minutes per incident through pre-processing analysis and structured handoff summaries
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 90 seconds]
+                    Beyond individual incidents, let me share the results from our 3-month pilot deployment. This gives you a sense of the real-world impact.
+                    
+                    We deployed TAMO-FoA in a production Kubernetes cluster managing 47 microservices across 3 environments—development, staging, and production. Over three months, the system processed 1,247 incidents.
+                    
+                    The results are impressive. TAMO-FoA achieved 76.3% root cause identification accuracy in production, compared to 68.1% for the existing rule-based system. That's an 8.2 percentage point improvement. More importantly, the mean time to resolution decreased by 34%, from 23.7 minutes to 15.6 minutes. This translates to real business value—faster incident resolution means less customer impact, lower operational costs, and reduced on-call fatigue for SREs.
+                    
+                    Perhaps most striking: 89% of incidents were handled completely automatically without human intervention. The system detected the issue, diagnosed the root cause, and in many cases, executed automated remediation.
+                    
+                    But we're honest about the limitations. For 31% of incidents, our SOP knowledge base didn't have coverage. We identified three primary categories of these novel incidents. First, new service APIs and third-party integrations—15% of incidents. These are cases where external services changed their APIs without notification, or new integrations were deployed without corresponding SOPs. Second, transient cloud provider issues—10% of incidents. These are problems with the underlying cloud infrastructure that are outside the scope of application-level RCA. Third, rare infrastructure race conditions—6% of incidents. These are complex timing-dependent failures that are difficult to diagnose even for human experts.
+                    
+                    For the 11% of incidents that required human intervention, TAMO-FoA still provided significant value. It saved SREs an average of 8 minutes per incident through pre-processing analysis and structured handoff summaries. Instead of starting from scratch, SREs received a detailed diagnostic report with multi-modal evidence, suggested root causes with confidence scores, and a clear summary of what the system had already investigated.
+                    
+                    Detailed failure mode analysis revealed three primary categories when human intervention was needed. First, novel third-party integration failures—45% of cases. These are situations where external service APIs changed without notification, and the system couldn't adapt quickly enough. Second, complex cascading failures—35% of cases. These involve more than 15 microservices with non-linear dependency chains that exceed the framework's current modeling capabilities. Third, infrastructure-level issues—20% of cases. These are Kubernetes cluster networking problems, node failures, or other infrastructure issues that are beyond the scope of application-level RCA.
+                    
+                    These insights guide our future work. We're developing dynamic SOP synthesis to address coverage gaps, and we're extending dependency modeling to handle more complex cascading failures.
+                    
+                    [Closing transition]
+                    Now let me show you how TAMO-FoA compares to baseline methods in comprehensive evaluation.
+                </aside>
+            </section>
+            
+            <!-- Slide 10: Evaluation/Comparison -->
+            <section>
+                <h2>Evaluation: Comprehensive Benchmarking</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>RCA Accuracy (%)</th>
+                            <th>Token Efficiency</th>
+                            <th>Hall. F1</th>
+                            <th>MTTR Reduction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rule-Based RCA</td>
+                            <td>42.3 ± 2.1</td>
+                            <td>1.0×</td>
+                            <td>---</td>
+                            <td>0.0%</td>
+                        </tr>
+                        <tr>
+                            <td>GPT-4o Direct</td>
+                            <td>52.1 ± 2.8</td>
+                            <td>1.0×</td>
+                            <td>---</td>
+                            <td>12.3%</td>
+                        </tr>
+                        <tr>
+                            <td>ReAct Vanilla</td>
+                            <td>61.2 ± 3.5</td>
+                            <td>1.0×</td>
+                            <td>0.68</td>
+                            <td>21.4%</td>
+                        </tr>
+                        <tr>
+                            <td>Enhanced ReAct</td>
+                            <td>66.3 ± 3.8</td>
+                            <td>1.8×</td>
+                            <td>0.71</td>
+                            <td>25.1%</td>
+                        </tr>
+                        <tr>
+                            <td>Chain-of-Thought</td>
+                            <td>68.7 ± 4.1</td>
+                            <td>1.5×</td>
+                            <td>0.74</td>
+                            <td>28.7%</td>
+                        </tr>
+                        <tr class="better">
+                            <td><strong>TAMO-FoA</strong></td>
+                            <td><strong>78.4 ± 4.2</strong></td>
+                            <td><strong>2.3×</strong></td>
+                            <td><strong>0.82</strong></td>
+                            <td><strong>34.1%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="three-column" style="margin-top: 20px;">
+                    <div class="card">
+                        <h4>Datasets</h4>
+                        <ul style="font-size: 0.6em;">
+                            <li>OpenRCA: 335 failures</li>
+                            <li>ITBench: 94 SRE scenarios</li>
+                            <li>AIOpsLab: 48 incidents</li>
+                            <li>CloudDiagBench: 156 multi-cloud</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Ablation Study</h4>
+                        <ul style="font-size: 0.6em;">
+                            <li>w/o SOP: -11.7% accuracy</li>
+                            <li>w/o Diffusion: -9.1%</li>
+                            <li>w/o HDM-2: +15.3% hallucination</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Key Improvements</h4>
+                        <ul style="font-size: 0.6em;">
+                            <li>17.2% over ReAct</li>
+                            <li>9.7% over Chain-of-Thought</li>
+                            <li>2.3× token efficiency</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 90 seconds]
+                    Let me show you comprehensive evaluation results across multiple benchmarks and baseline methods.
+                    
+                    We evaluated TAMO-FoA on four comprehensive benchmarks. First, OpenRCA: 335 real-world failures with 68GB of telemetry from production microservices. Second, ITBench: 94 SRE diagnostic scenarios from Microsoft. Third, AIOpsLab: 48 end-to-end incident scenarios with multi-modal data. Fourth, CloudDiagBench: 156 multi-cloud failure scenarios across AWS, Azure, and GCP environments. This multi-cloud evaluation is particularly important as organizations increasingly adopt multi-cloud architectures.
+                    
+                    We compare against five key baselines. Rule-Based RCA achieves only 42.3% accuracy—it can't handle novel failures. GPT-4o Direct Prompting, where we just ask the LLM directly without tools or structure, achieves 52.1% accuracy. Vanilla ReAct agents, which use tool augmentation but no SOP guidance or specialized verification, achieve 61.2% accuracy. Enhanced ReAct with multi-modal fusion achieves 66.3% accuracy and 1.8× token efficiency. Chain-of-Thought prompting with tool augmentation achieves 68.7% accuracy.
+                    
+                    TAMO-FoA achieves 78.4% accuracy—that's a 17.2% absolute improvement over vanilla ReAct, a 12.1% improvement over enhanced ReAct, and a 9.7% improvement over Chain-of-Thought. More importantly, we achieve 2.3× token efficiency through SOP-guided pruning of irrelevant tool calls. This translates to real cost savings—fewer API calls to expensive LLM services.
+                    
+                    For hallucination detection, TAMO-FoA's HDM-2 achieves an F1 score of 0.82, compared to 0.68 for SelfCheckGPT, 0.71 for FActScore, and 0.74 for ReAct with NLI verification. That's a 21% relative improvement. Our false positive rate is 7.2%, compared to 18.5% for SelfCheckGPT.
+                    
+                    For operational impact, TAMO-FoA achieves a 34.1% reduction in mean time to resolution, compared to 12.3% for GPT-4o Direct, 21.4% for vanilla ReAct, and 28.7% for Chain-of-Thought.
+                    
+                    Our ablation study demonstrates the contribution of each component. Removing SOP guidance causes the largest performance drop—11.7 percentage points in accuracy. This validates that domain-specific procedural alignment is critical. Removing the diffusion encoder causes a 9.1% accuracy drop, showing that temporal preservation in multi-modal fusion is essential. Removing HDM-2 verification causes a 15.3% increase in hallucination rate, demonstrating that enterprise-aware verification is crucial for production deployment.
+                    
+                    The superiority of TAMO-FoA is particularly evident in enterprise settings where domain-specific knowledge and structured procedures are critical. Our framework's performance advantage stems from the systematic integration of SOP-guided reasoning, which provides deterministic diagnostic paths validated by expert knowledge, contrasting with the inherent variability of general chain-of-thought approaches.
+                    
+                    [Closing transition]
+                    While these results are strong, there's still work to do. Let me outline future directions.
+                </aside>
+            </section>
+            
+            <!-- Slide 11: Future Work -->
+            <section>
+                <h2>Future Directions</h2>
+                
+                <div class="highlight-box">
+                    <strong>Immediate Next Steps:</strong> Dynamic SOP synthesis for novel failure patterns, model quantization for cost reduction (targeting 3-5× reduction)
+                </div>
+                
+                <div class="two-column">
+                    <div class="card">
+                        <h3>1. Live ICS/OT Integration</h3>
+                        <p style="font-size: 0.7em;">Extend pipeline to ingest real-time Industrial Control System telemetry including IDS alerts and SCADA logs for automated breach forensics and control-chain root-cause analysis. This domain presents unique challenges including real-time constraints and the high cost of failure in critical infrastructure.</p>
+                    </div>
+                    <div class="card">
+                        <h3>2. Continuous Learning Pipelines</h3>
+                        <p style="font-size: 0.7em;">Integration with continuous learning frameworks to enable automated SOP knowledge base updates and adaptive model refinement based on operational feedback, addressing the SOP quality drift challenge observed in our pilot deployment.</p>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <h3>3. Scalability & Cost Optimization</h3>
+                    <div class="two-column" style="margin-top: 10px;">
+                        <div>
+                            <p style="font-size: 0.7em;"><strong>Current:</strong> 3.7s response time on RTX 4090 GPU</p>
+                            <p style="font-size: 0.7em;"><strong>Challenge:</strong> Enterprise scale requires 8-10 GPU nodes ($50K-$80K investment)</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.7em;"><strong>Solution:</strong> Model quantization (INT8/INT4), knowledge distillation, hybrid edge/cloud deployment</p>
+                            <p style="font-size: 0.7em;"><strong>Target:</strong> 3-5× reduction in computational requirements while maintaining 94%+ accuracy</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="key-takeaway">
+                    <strong>Open Source:</strong> Complete implementation available at <strong>github.com/akshaymittal143/TAMO-FoA</strong>
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 75 seconds]
+                    While TAMO-FoA demonstrates substantial improvements, there are clear directions for future work.
+                    
+                    First, immediate next steps. We're developing dynamic SOP synthesis to address the 31% of novel incidents where SOP coverage fails. The pipeline extracts semantic signatures from novel incidents, retrieves similar historical cases, and performs procedural hybridization to generate new diagnostic procedures. These undergo human validation before permanent integration, ensuring quality control while enabling rapid adaptation.
+                    
+                    We're also working on model quantization and knowledge distillation to reduce computational costs. Preliminary experiments with 8-bit quantization show promising results, reducing GPU memory footprint by 60% while maintaining 94% of baseline accuracy. Our target is a 3-5× reduction in computational requirements, making large-scale deployment more cost-effective.
+                    
+                    Second, advanced research directions. We're extending TAMO-FoA to Industrial Control Systems and Operational Technology domains. This involves ingesting real-time ICS telemetry including IDS alerts and SCADA logs for automated breach forensics. This domain presents unique challenges: real-time constraints are stricter, and the cost of failure is extremely high in critical infrastructure environments. We need to adapt our verification mechanisms and reasoning paradigms for these constraints.
+                    
+                    We're also developing continuous learning pipelines. The SOP knowledge base needs to evolve as system architectures change. We're building frameworks for automated SOP updates based on operational feedback, addressing the SOP quality drift challenge we observed in our pilot deployment. This involves learning from successful diagnostic trajectories and automatically refining procedures.
+                    
+                    Third, scalability and cost optimization. While TAMO-FoA achieves 3.7-second response time on high-end hardware, enterprise-scale deployment handling 100 concurrent incidents would require approximately 8-10 GPU nodes, translating to $50K-$80K in infrastructure investment. We're exploring hybrid deployment architectures where lightweight edge agents handle routine incidents and escalate complex cases to centralized GPU clusters. This offers a pragmatic path toward cost-effective large-scale adoption.
+                    
+                    Finally, I want to emphasize that TAMO-FoA is completely open source. The complete implementation, including source code, pre-trained model weights, SOP knowledge base with 247 procedures, and evaluation scripts, is publicly available at github.com/akshaymittal143/TAMO-FoA. The repository includes all core components, Docker containerization, exact prompts, tool APIs, seed controls, and evaluation benchmarks. We believe in reproducibility and community engagement.
+                    
+                    [Closing transition]
+                    Let me conclude by summarizing the key contributions and impact.
+                </aside>
+            </section>
+            
+            <!-- Slide 12: Conclusion -->
+            <section>
+                <h2>Conclusion</h2>
+                
+                <div class="key-takeaway">
+                    <strong>Main Contribution:</strong> TAMO-FoA provides a comprehensive solution to the three primary challenges limiting LLM adoption in production RCA: hallucination, context constraints, and dynamic dependency misunderstanding.
+                </div>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>Key Deliverables</h3>
+                        <ul style="font-size: 0.8em;">
+                            <li>✅ <strong>Tool-Augmented Perception</strong> for real-time system state</li>
+                            <li>✅ <strong>SOP-Guided Reasoning</strong> with 42% reduction in irrelevant calls</li>
+                            <li>✅ <strong>HDM-2 Verification</strong> with 0.82 F1 score</li>
+                            <li>✅ <strong>Multi-Modal Fusion</strong> preserving temporal causality</li>
+                            <li>✅ <strong>17.2% accuracy improvement</strong> over baselines</li>
+                            <li>✅ <strong>2.3× token efficiency</strong> gains</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Key Insights</h3>
+                        <ul style="font-size: 0.8em;">
+                            <li>Multi-modal fusion with temporal preservation is critical</li>
+                            <li>Structured SOP guidance significantly improves reliability</li>
+                            <li>Enterprise-aware hallucination detection is essential</li>
+                            <li>Systematic integration beats individual innovations</li>
+                            <li>Production deployment validates real-world impact</li>
+                            <li>Open source enables community advancement</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="highlight-box" style="margin-top: 20px;">
+                    <strong>Impact:</strong> TAMO-FoA provides a concrete blueprint for organizations to adopt LLM-powered RCA while maintaining the reliability and explainability required for mission-critical operations. By systematically addressing core limitations, this work paves the way for trustworthy AgentOps in both IT and operational technology domains.
+                </div>
+                
+                <aside class="notes">
+                    [Main explanation - 90 seconds]
+                    Let me conclude by summarizing what we've achieved and why it matters.
+                    
+                    TAMO-FoA provides a comprehensive solution to the three primary challenges limiting LLM adoption in production RCA. We don't just use LLMs—we engineer reliable agent systems powered by LLMs.
+                    
+                    Our four key innovations work together systematically. Tool-augmented perception grounds reasoning in real-time system state. SOP-guided reasoning provides domain expertise and reduces irrelevant tool calls by 42%. HDM-2 verification catches hallucinations with 0.82 F1 score, especially for enterprise-specific knowledge. Multi-modal fusion preserves temporal causality across metrics, logs, and traces.
+                    
+                    The results demonstrate substantial improvements: 17.2% accuracy improvement over vanilla ReAct, 9.7% over Chain-of-Thought, and 2.3× better token efficiency. In production, we achieved 76.3% accuracy with 34% reduction in mean time to resolution, handling 89% of incidents automatically.
+                    
+                    But beyond the numbers, there are key insights. First, multi-modal fusion with preservation of temporal relationships is critical for accurate RCA. You can't just textualize everything—you need to respect the inherent structure of each data type. Second, structured guidance through SOPs significantly improves reasoning reliability while reducing computational costs. Domain-specific procedural alignment is more predictive than generic heuristics. Third, enterprise-aware hallucination detection is essential for production deployment trust. You need to distinguish between public knowledge and proprietary enterprise context, with stricter verification for the latter.
+                    
+                    Perhaps most importantly, systematic integration beats individual innovations. Each component alone provides some benefit, but together they create a framework that's greater than the sum of its parts. The ablation study shows that removing any component causes significant performance degradation.
+                    
+                    Production deployment validates real-world impact. Our 3-month pilot processed 1,247 incidents across 47 microservices, demonstrating that TAMO-FoA works in practice, not just in controlled experiments. The 89% automation rate and 34% MTTR reduction translate to real business value.
+                    
+                    Finally, by making TAMO-FoA completely open source, we enable community advancement. The complete implementation, including models, SOPs, and evaluation benchmarks, is available for researchers and practitioners to build upon.
+                    
+                    TAMO-FoA provides a concrete blueprint for organizations to adopt LLM-powered RCA while maintaining the reliability and explainability required for mission-critical operations. By systematically addressing core limitations, this work paves the way for trustworthy AgentOps—autonomous, self-healing cloud infrastructures that represent the future of enterprise computing.
+                    
+                    [Closing transition]
+                    Thank you for your attention. I'm happy to take questions.
+                </aside>
+            </section>
+            
+            <!-- Slide 13: Thank You -->
+            <section class="title-slide">
+                <h1>Thank You!</h1>
+                <h2>Questions & Discussion</h2>
+                
+                <div style="margin-top: 60px; font-size: 0.8em;">
+                    <p><strong>Contact Information</strong></p>
+                    <p>Akshay Mittal: akshay.mittal@ieee.org</p>
+                    <p>Krishna Kandi: krishna.kandi@ieee.org</p>
+                    <p>Rafiuddin Syed: rafiuddinsyed01@gmail.com</p>
+                    <p>Sagar Mahajan: mahajanspm@yahoo.com</p>
+                </div>
+                
+                <div class="card" style="margin-top: 40px; text-align: left; font-size: 0.7em;">
+                    <p><strong>Paper Citation:</strong></p>
+                    <p>A. Mittal, K. Kandi, R. Syed, S. Mahajan, "TAMO-FoA: Tool-Augmented AIOps for Reliable RCA in Cloud-Native Systems," <em>IEEE Conference on Cloud Computing and Wireless Communication (CCWC)</em>, January 2026.</p>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <span class="badge badge-primary">LLMs</span>
+                    <span class="badge badge-primary">Root Cause Analysis</span>
+                    <span class="badge badge-primary">AIOps</span>
+                    <span class="badge badge-primary">Cloud Computing</span>
+                    <span class="badge badge-primary">Hallucination Mitigation</span>
+                    <span class="badge badge-primary">AgentOps</span>
+                </div>
+                
+                <div style="margin-top: 40px; font-size: 0.8em;">
+                    <p><strong>🔗 Resources:</strong></p>
+                    <p>GitHub: <strong>github.com/akshaymittal143/TAMO-FoA</strong></p>
+                    <p>Complete implementation, models, SOPs, and benchmarks available</p>
+                </div>
+                
+                <aside class="notes">
+                    [Closing - 60 seconds]
+                    Thank you for your attention today. I hope this presentation has given you a clear understanding of TAMO-FoA and how it addresses the critical challenges in using LLMs for Root Cause Analysis in cloud-native systems.
+                    
+                    Before I open the floor to questions, let me preview some common topics that often come up. First, deployment considerations—we've discussed the computational requirements and our work on quantization. Second, SOP coverage—we've shown how dynamic SOP synthesis addresses novel failure patterns. Third, generalization—our multi-cloud evaluation demonstrates robustness across different platforms. Fourth, security and trust—HDM-2's enterprise-aware verification addresses concerns about hallucination in mission-critical operations.
+                    
+                    I'm happy to discuss any of these topics, or any other questions you might have about the framework, the evaluation, or future directions. Please feel free to reach out via email if you'd like to collaborate or learn more about the implementation.
+                    
+                    The complete codebase is open source and available on GitHub. We welcome contributions, especially in areas like continuous learning pipelines, ICS/OT integration, and scalability optimizations.
+                    
+                    Thank you again, and I look forward to your questions.
+                </aside>
+            </section>
+            
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/zoom/zoom.js"></script>
+    
+    <script>
+        Reveal.initialize({
+            hash: true,
+            controls: true,
+            progress: true,
+            center: false,
+            transition: 'slide',
+            slideNumber: 'c/t',
+            width: 1280,
+            height: 720,
+            margin: 0.04,
+            plugins: [ RevealNotes, RevealHighlight, RevealZoom ]
+        });
+    </script>
+</body>
+</html>
