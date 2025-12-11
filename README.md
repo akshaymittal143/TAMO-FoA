@@ -243,10 +243,11 @@ If you use TAMO-FoA in your research, please cite our paper:
 
 ```bibtex
 @inproceedings{mittal2025tamo,
-  title={Enhancing Cloud-Native Root Cause Analysis with Large Language Models: The TAMO-FoA Framework},
-  author={Mittal, Akshay},
-  booktitle={Proceedings of the IEEE International Conference on Information and Communication Technology},
-  year={2025}
+  title={TAMO-FoA: Tool-Augmented AIOps for Reliable RCA in Cloud-Native Systems},
+  author={Mittal, Akshay and Kandi, Krishna and Syed, Rafiuddin and Mahajan, Sagar},
+  booktitle={Proceedings of the IEEE CCWC 2026},
+  year={2026},
+  organization={IEEE}
 }
 ```
 
@@ -263,9 +264,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Akshay Mittal**: akshay.mittal@ieee.org
-- **Project Link**: https://github.com/akshaymittal143/TAMO-FoA
-- **Paper**: [arXiv link when available]
+### Authors
+- **Akshay Mittal** (PhD Scholar, University of the Cumberlands): akshay.mittal@ieee.org
+- **Krishna Kandi** (Independent Researcher): krishna.kandi@ieee.org
+- **Rafiuddin Syed** (Independent Researcher): rafiuddinsyed01@gmail.com
+- **Sagar Mahajan** (Independent Researcher): mahajanspm@yahoo.com
+
+### Links
+- **Project Repository**: https://github.com/akshaymittal143/TAMO-FoA
+- **Paper**: IEEE CCWC 2026
 
 ---
 
