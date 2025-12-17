@@ -44,6 +44,15 @@
         
         .reveal .slides section {
             text-align: left;
+            padding-top: 0% !important;
+        }
+        
+        .reveal .slides section.title-slide {
+            padding-top: 0 !important;
+        }
+        
+        .reveal .slides {
+            top: 20% !important;
         }
         
         .highlight-box {
@@ -268,7 +277,7 @@
                     Today, I'll show you how TAMO-FoA systematically addresses these challenges through four key innovations, achieving 17.2% accuracy improvement and 2.3× token efficiency gains. Let's begin.
                 </aside>
             </section>
-            s
+            
             <!-- Slide 2: Problem Statement -->
             <section>
                 <h2>The Challenge: LLMs in Production RCA</h2>
@@ -277,13 +286,13 @@
                 </div>
                 
                 <ul>
-                    <li class="fragment">🚨 <strong>Hallucinations:</strong> LLMs generate plausible but incorrect root causes, especially for enterprise-specific knowledge</li>
-                    <li class="fragment">📊 <strong>Context Constraints:</strong> Limited context windows struggle with multi-modal telemetry (metrics, logs, traces)</li>
-                    <li class="fragment">🔄 <strong>Dynamic Dependencies:</strong> Misunderstanding current service relationships leads to incorrect fault propagation analysis</li>
-                    <li class="fragment">⚡ <strong>Scalability:</strong> High computational costs and latency for real-time incident response</li>
+                    <li>🚨 <strong>Hallucinations:</strong> LLMs generate plausible but incorrect root causes, especially for enterprise-specific knowledge</li>
+                    <li>📊 <strong>Context Constraints:</strong> Limited context windows struggle with multi-modal telemetry (metrics, logs, traces)</li>
+                    <li>🔄 <strong>Dynamic Dependencies:</strong> Misunderstanding current service relationships leads to incorrect fault propagation analysis</li>
+                    <li>⚡ <strong>Scalability:</strong> High computational costs and latency for real-time incident response</li>
                 </ul>
                 
-                <div class="key-takeaway fragment">
+                <div class="key-takeaway">
                     <strong>Impact:</strong> Current approaches achieve only 61.2% accuracy with high token consumption, making production deployment risky
                 </div>
                 
@@ -364,7 +373,7 @@
                 <h2>TAMO-FoA System Architecture</h2>
                 
                 <div class="three-column">
-                    <div class="card fragment">
+                    <div class="card">
                         <h3>1. Multi-Modal<br>Observation Engine</h3>
                         <ul style="font-size: 0.7em;">
                             <li>Metrics: 1D-CNN + Temporal Attention</li>
@@ -374,7 +383,7 @@
                         </ul>
                     </div>
                     
-                    <div class="card fragment">
+                    <div class="card">
                         <h3>2. SOP-Enhanced<br>Reasoning Agent</h3>
                         <ul style="font-size: 0.7em;">
                             <li>Neo4j SOP Knowledge Base (247 procedures)</li>
@@ -384,7 +393,7 @@
                         </ul>
                     </div>
                     
-                    <div class="card fragment">
+                    <div class="card">
                         <h3>3. HDM-2<br>Verification Module</h3>
                         <ul style="font-size: 0.7em;">
                             <li>DeBERTa Context Verification</li>
@@ -395,12 +404,12 @@
                     </div>
                 </div>
                 
-                <div class="card fragment" style="margin-top: 20px;">
+                <div class="card" style="margin-top: 20px;">
                     <h3>4. Action Execution Engine</h3>
                     <p style="font-size: 0.7em;">Interfaces with Kubernetes API, Monitoring Systems, and Incident Management platforms</p>
                 </div>
                 
-                <div class="highlight-box fragment">
+                <div class="highlight-box">
                     <strong>Performance:</strong> 3.7s average response time, 27 incidents/minute throughput
                 </div>
                 
@@ -451,12 +460,12 @@ L_diff = E[||ε - ε_θ(x_t, t, c)||²]
                     <div>
                         <h3>Why Diffusion?</h3>
                         <ul>
-                            <li class="fragment">AIOps telemetry is inherently noisy</li>
-                            <li class="fragment">Multiple possible root causes (probabilistic)</li>
-                            <li class="fragment">Temporal misalignments across modalities</li>
-                            <li class="fragment">Uncertainty quantification</li>
+                            <li>AIOps telemetry is inherently noisy</li>
+                            <li>Multiple possible root causes (probabilistic)</li>
+                            <li>Temporal misalignments across modalities</li>
+                            <li>Uncertainty quantification</li>
                         </ul>
-                        <div class="highlight-box fragment">
+                        <div class="highlight-box">
                             <strong>Result:</strong> 9.1% accuracy drop when diffusion encoder is removed (ablation study)
                         </div>
                     </div>
@@ -495,7 +504,7 @@ L_diff = E[||ε - ε_θ(x_t, t, c)||²]
                             <p><strong>4. Observation:</strong> Executes tool call, observes result</p>
                         </div>
                         
-                        <div class="card fragment" style="margin-top: 20px;">
+                        <div class="card" style="margin-top: 20px;">
                             <h4>Action Pruner Features</h4>
                             <ul style="font-size: 0.7em;">
                                 <li>Action type (38% importance)</li>
@@ -520,7 +529,7 @@ L_diff = E[||ε - ε_θ(x_t, t, c)||²]
                             <span>Inference Overhead</span>
                         </div>
                         
-                        <div class="highlight-box fragment">
+                        <div class="highlight-box">
                             <strong>Key Insight:</strong> SOP alignment is more predictive than generic action-type heuristics
                         </div>
                     </div>
@@ -561,7 +570,7 @@ L_diff = E[||ε - ε_θ(x_t, t, c)||²]
                             <p style="font-size: 0.7em;">Probe-based verification for open models; external verifiers for closed models (GPT-4o/Claude-3.5)</p>
                         </div>
                         
-                        <div class="highlight-box fragment">
+                        <div class="highlight-box">
                             <strong>Taxonomy:</strong> Enterprise Knowledge vs. Common Knowledge
                             <ul style="font-size: 0.7em; margin-top: 10px;">
                                 <li>Enterprise: Internal service IDs, proprietary metrics (0.85 threshold)</li>
@@ -584,7 +593,7 @@ L_diff = E[||ε - ε_θ(x_t, t, c)||²]
                             <span>False Positive Rate</span>
                         </div>
                         
-                        <div class="card fragment" style="margin-top: 20px;">
+                        <div class="card" style="margin-top: 20px;">
                             <h4>Contrastive Learning</h4>
                             <p style="font-size: 0.7em;">Learns discriminative representations between factual and hallucinated content through self-supervision</p>
                         </div>
@@ -628,31 +637,31 @@ L_diff = E[||ε - ε_θ(x_t, t, c)||²]
                     <div>
                         <h3>Step-by-Step Walkthrough</h3>
                         <ol style="font-size: 0.8em;">
-                            <li class="fragment"><strong>Detection:</strong> Anomalous patterns detected
+                            <li><strong>Detection:</strong> Anomalous patterns detected
                                 <ul>
                                     <li>Metrics: 95% pool utilization</li>
                                     <li>Logs: Timeout errors</li>
                                     <li>Traces: Service dependency failures</li>
                                 </ul>
                             </li>
-                            <li class="fragment"><strong>SOP Retrieval:</strong> Relevant database connectivity SOPs retrieved</li>
-                            <li class="fragment"><strong>Investigation:</strong> Multi-modal correlation identifies OrderService as source</li>
-                            <li class="fragment"><strong>Verification:</strong> HDM-2 verifies against live topology</li>
-                            <li class="fragment"><strong>Root Cause:</strong> Misconfigured max_connections exceeding database limit</li>
-                            <li class="fragment"><strong>Remediation:</strong> Automated Kubernetes API calls to adjust configuration</li>
+                            <li><strong>SOP Retrieval:</strong> Relevant database connectivity SOPs retrieved</li>
+                            <li><strong>Investigation:</strong> Multi-modal correlation identifies OrderService as source</li>
+                            <li><strong>Verification:</strong> HDM-2 verifies against live topology</li>
+                            <li><strong>Root Cause:</strong> Misconfigured max_connections exceeding database limit</li>
+                            <li><strong>Remediation:</strong> Automated Kubernetes API calls to adjust configuration</li>
                         </ol>
                     </div>
                     <div>
                         <h3>Key Insights</h3>
-                        <div class="card fragment">
+                        <div class="card">
                             <h4>HDM-2 Caught a Hallucination</h4>
                             <p style="font-size: 0.7em;">Agent initially suggested "PaymentGateway → InventoryService" dependency, but HDM-2 flagged this as hallucination by cross-referencing live topology graph. System automatically replanned.</p>
                         </div>
-                        <div class="metric fragment">
+                        <div class="metric">
                             <span class="metric-value">4.2 min</span>
                             <span>Time to Resolution</span>
                         </div>
-                        <div class="metric fragment">
+                        <div class="metric">
                             <span class="metric-value">94%</span>
                             <span>Confidence Score</span>
                         </div>
@@ -1049,10 +1058,10 @@ L_diff = E[||ε - ε_θ(x_t, t, c)||²]
             progress: true,
             center: false,
             transition: 'slide',
-            slideNumber: 'c/t',
+            slideNumber: false,
             width: 1280,
             height: 720,
-            margin: 0.04,
+            margin: 0.0,
             plugins: [ RevealNotes, RevealHighlight, RevealZoom ]
         });
     </script>
